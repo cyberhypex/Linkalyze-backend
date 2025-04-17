@@ -1,6 +1,7 @@
 package com.Link.Linkalyz.controllers;
 
 
+import com.Link.Linkalyz.dtos.LoginRequest;
 import com.Link.Linkalyz.dtos.RegisterRequest;
 import com.Link.Linkalyz.models.User;
 import com.Link.Linkalyz.service.UserService;
@@ -29,5 +30,10 @@ public class AuthController {
         user.setRole("ROLE_USER");
         userService.registerUser(user);
         return ResponseEntity.ok("User Registered Successfully");
+    }
+
+    @PostMapping("/public/login")
+    public ResponseEntity<?> loginRequest(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userService.authenticateUser(loginRequest));
     }
 }
