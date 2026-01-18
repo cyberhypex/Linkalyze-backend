@@ -53,12 +53,24 @@ public class UrlMappingController {
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate
     ){
-        DateTimeFormatter formatter=DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        LocalDateTime start=LocalDateTime.parse(startDate,formatter);
-        LocalDateTime end=LocalDateTime.parse(endDate,formatter);
-       List<ClickEventDTO> clickEventDTOS= urlMappingService.getClickEventsByDate(shortUrl,start,end);
-       return ResponseEntity.ok(clickEventDTOS);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        LocalDate start = LocalDate.parse(startDate, formatter);
+        LocalDate end = LocalDate.parse(endDate, formatter);
+
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
+
+        List<ClickEventDTO> clickEventDTOS =
+                urlMappingService.getClickEventsByDate(
+                        shortUrl,
+                        startDateTime,
+                        endDateTime
+                );
+
+        return ResponseEntity.ok(clickEventDTOS);
     }
+
     @GetMapping("/totalClicks")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map<LocalDate,Long>> getTotalClicksByDate(Principal principal,
